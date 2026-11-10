@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Démo indépendante — Demande de prêt</title>
+  <style>
+    :root { font-family: Arial, sans-serif; color: #172033; background: #f3f6fa; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px 14px; }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    .notice { padding: 12px 14px; background: #fff4d6; border: 1px solid #e8c96d; border-radius: 10px; font-size: 13px; line-height: 1.45; }
+    .card { background: white; margin-top: 16px; padding: 22px; border-radius: 16px; box-shadow: 0 8px 28px #182b4512; }
+    h1 { font-size: 23px; margin: 0 0 8px; }
+    .sub { color: #657086; font-size: 14px; line-height: 1.5; margin: 0 0 20px; }
+    label { display: block; font-size: 14px; font-weight: 700; margin: 14px 0 6px; }
+    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd3df; border-radius: 9px; font-size: 16px; background: white; }
+    textarea { min-height: 82px; resize: vertical; }
+    button { width: 100%; border: 0; border-radius: 9px; padding: 13px; margin-top: 18px; background: #174c8c; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
+    button.secondary { background: #e9eef5; color: #172033; }
+    .step { display: none; }
+    .step.active { display: block; }
+    .hint { color: #657086; font-size: 12px; line-height: 1.45; margin-top: 8px; }
+    .result { padding: 14px; border-radius: 9px; background: #edf7ef; line-height: 1.5; }
+    footer { text-align: center; color: #7b8493; font-size: 12px; margin: 18px 0; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="notice"><strong>PROJET DE DÉMONSTRATION INDÉPENDANT</strong><br>
+      Cette page n'est pas un site officiel de FINCA RDC et n'est pas affiliée à FINCA. N'entrez jamais un vrai code PIN, mot de passe ou OTP. Aucune donnée n'est envoyée ni enregistrée.
+    </div>
+
+    <section class="card step active" id="step1">
+      <h1>Demande de prêt — Démonstration</h1>
+      <p class="sub">Veuillez remplir les informations fictives pour découvrir le parcours de demande.</p>
+      <form id="loanForm">
+        <label for="name">Nom complet</label>
+        <input id="name" required maxlength="80" autocomplete="off" placeholder="Votre nom complet">
+        <label for="phone">Numéro de téléphone</label>
+        <input id="phone" required maxlength="20" autocomplete="off" placeholder="+243 ...">
+        <label for="amount">Montant souhaité (USD)</label>
+        <select id="amount" required>
+          <option value="">Choisir un montant</option>
+          <option>50</option><option>100</option><option>150</option>
+          <option>200</option><option>300</option><option>500</option>
+        </select>
+        <label for="purpose">Objet du prêt</label>
+        <textarea id="purpose" required maxlength="300" placeholder="Décrivez brièvement l'objet du prêt"></textarea>
+        <button type="submit">Continuer</button>
+      </form>
+    </section>
+
+    <section class="card step" id="step2">
+      <h1>Vérification de démonstration</h1>
+      <p class="sub">Dans un vrai service financier, l'authentification doit être effectuée uniquement dans le canal officiel du fournisseur.</p>
+      <label for="demoPin">Code PIN fictif (4 chiffres)</label>
+      <input id="demoPin" inputmode="numeric" maxlength="4" placeholder="Exemple : 1234" autocomplete="off">
+      <p class="hint">Utilisez uniquement le code de test 1234. Ne saisissez jamais votre vrai PIN mobile money ou bancaire.</p>
+      <button id="pinBtn" type="button">Valider le test</button>
+      <button class="secondary" type="button" onclick="showStep(1)">Retour</button>
+    </section>
+
+    <section class="card step" id="step3">
+      <h1>Code OTP fictif</h1>
+      <p class="sub">Cette étape simule un écran de vérification. Aucun SMS n'est envoyé.</p>
+      <label for="demoOtp">Code de démonstration (6 chiffres)</label>
+      <input id="demoOtp" inputmode="numeric" maxlength="6" placeholder="Exemple : 000000" autocomplete="off">
+      <p class="hint">Utilisez uniquement le code de test 000000. Ce champ ne doit jamais recevoir un vrai OTP.</p>
+      <button id="otpBtn" type="button">Terminer la démonstration</button>
+      <button class="secondary" type="button" onclick="showStep(2)">Retour</button>
+    </section>
+
+    <section class="card step" id="step4">
+      <h1>Démonstration terminée</h1>
+      <div class="result">
+        <strong>Parcours de test terminé.</strong><br>
+        Ceci n'est pas une demande réelle, une approbation de prêt ou une promesse de décaissement.
+      </div>
+      <p class="sub" id="summary"></p>
+      <button class="secondary" type="button" onclick="location.reload()">Recommencer</button>
+    </section>
+    <footer>Prototype éducatif • Aucune donnée n'est transmise ou sauvegardée</footer>
+  </main>
+
+  <script>
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+    document.getElementById('loanForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      showStep(2);
+    });
+    document.getElementById('pinBtn').addEventListener('click', function() {
+      const pin = document.getElementById('demoPin').value;
+      if (pin !== '1234') { alert('Pour cette démonstration, utilisez uniquement 1234.'); return; }
+      showStep(3);
+    });
+    document.getElementById('otpBtn').addEventListener('click', function() {
+      const otp = document.getElementById('demoOtp').value;
+      if (otp !== '000000') { alert('Pour cette démonstration, utilisez uniquement 000000.'); return; }
+      const name = document.getElementById('name').value.trim();
+      const amount = document.getElementById('amount').value;
+      document.getElementById('summary').textContent =
+        'Nom de test : ' + name + ' • Montant demandé dans le scénario : ' + amount + ' USD.';
+      showStep(4);
+    });
+  </script>
+</body>
+</html>
